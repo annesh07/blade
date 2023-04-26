@@ -1,4 +1,5 @@
-setwd("D:/Bordeaux/Codes")
+#you might want to assign the location of the working directory to that folder where the codes will be downloaded
+setwd("D:/Bordeaux/Codes") 
 library('rBeta2009')
 
 Nsample=20
