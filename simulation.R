@@ -9,6 +9,7 @@ Noise=0.5
 F0=rdirichlet(Nsample,rep(5,Ncell))
 mu=matrix(rnorm(Ngene*Ncell,mean=0,sd=2),
           nrow=Ngene)
+sigma <- matrix(Noise, nrow=Ngene, ncol = Ncell)
 x=array(NA, dim=c(Ngene, Ncell, Nsample))
 
 Y=matrix(0,nrow=Nsample,ncol=Ngene)
