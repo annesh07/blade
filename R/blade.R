@@ -31,14 +31,16 @@ blade <- function(Y, mu, sigma, a, k0, a0){
   r <- optim(par = c(array(0, dim = c(Nsample, Ngene, Ncell)),
             matrix(0, Ngene, Ncell), matrix(0.01, Nsample, Ncell)),
           fn = elbo,
-          Y = Y, N0 = N0, N00 = N00, N000 = N000,
+          Y = Y, N0 = N0, N00 = N00, N000 = N000, mu=mu, a0=a0,
+          Ngene = Ngene, Nsample=Nsample, Ncell= Ncell,
           method = "L-BFGS-B",
           lower = c(array(0.01, dim = c(Nsample, Ngene, Ncell)),
                     matrix(0.01, Ngene, Ncell),
                     matrix(0.01, Nsample, Ncell)),
           upper = c(array(Inf, dim = c(Nsample, Ngene, Ncell)),
-                    matrix(Inf, Ngene, Ncell), matrix(1, Nsample,Ncell))
-          )
+                    matrix(Inf, Ngene, Ncell), matrix(1, Nsample,Ncell)),
+          control = list("trace"=1, "REPORT"=1, maxit = 2)
+  )
 
   return(r)
 }

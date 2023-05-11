@@ -1,9 +1,9 @@
-elbo1=function(V,W){
+elbo1=function(V, W, mu, a0, Ngene, Ncell, Nsample){
   V=array(V,dim=c(Ngene,Ncell,Nsample))
   W=matrix(W, nrow=Ngene, ncol=Ncell)
   mu0=mu
   b0=a0*sigma
-  
+
   Vjt=rowSums(V,dims=2)/Nsample
   Vijt=sweep(V,1:2,Vjt,"-")
   V0=rowSums((Vijt^2),dims=2)
