@@ -30,7 +30,7 @@ blade <- function(Y, mu, sigma, a, k0, a0){
 
   r <- optim(par = c(array(0, dim = c(Nsample, Ngene, Ncell)),
             matrix(0, Ngene, Ncell), matrix(0.01, Nsample, Ncell)),
-          fn = elbo,
+          fn = elbo, gr = grad,
           Y = Y, N0 = N0, N00 = N00, N000 = N000, mu=mu, a0=a0,
           Ngene = Ngene, Nsample=Nsample, Ncell= Ncell,
           method = "L-BFGS-B",
