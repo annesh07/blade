@@ -1,5 +1,5 @@
 grad3=function(V, W, B, Y, a, Ngene, Ncell, Nsample){
-  V <- array(V,dim=c(Ngene,Ncell,Nsample))
+  V <- array(V,dim=c(Nsample,Ngene,Ncell))
   W <- matrix(W, nrow=Ngene, ncol=Ncell)
   B <- matrix(B, nrow=Nsample, ncol=Ncell)
 
