@@ -1,4 +1,4 @@
-elbo3=function(B, Nsample, Ncell){
+elbo3=function(B, a, Nsample, Ncell){
   B=matrix(B, nrow=Nsample, ncol=Ncell)
 
   f=(a-1)*sweep(digamma(B),1,digamma(rowSums(B)),"-")
