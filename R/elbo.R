@@ -1,4 +1,4 @@
-elbo <- function(X, Y, N0, N00, N000, mu, a0, Ngene, Nsample, Ncell){
+elbo <- function(X, Y, N0, N00, N000, mu, a, a0, Ngene, Nsample, Ncell){
   V <- X[1:N0]
   W <- X[(N0 + 1):(N0 + N00)]
   B <- X[(N0 + N00 + 1):(N0 + N00 + N000)]

@@ -32,7 +32,7 @@ blade <- function(Y, mu, sigma, a, k0, a0){
             matrix(0, Ngene, Ncell), matrix(0.01, Nsample, Ncell)),
           fn = elbo, gr = grad,
           Y = Y, N0 = N0, N00 = N00, N000 = N000, mu=mu, a0=a0,
-          Ngene = Ngene, Nsample=Nsample, Ncell= Ncell,
+          Ngene = Ngene, Nsample=Nsample, Ncell= Ncell, a=a,
           method = "L-BFGS-B",
           lower = c(array(0.01, dim = c(Nsample, Ngene, Ncell)),
                     matrix(0.01, Ngene, Ncell),
