@@ -11,7 +11,7 @@ grad2=function(V, W, B, Y, mu, a0, Ngene, Ncell, Nsample){
 
   e11 <- (Nsample-1)*W+(k0*W)/(k0+Nsample)
 
-  d1 <- sum(-(a0+Nsample/2)*e11/e1)
+  d1 <- -(a0+Nsample/2)*e11/e1
 
   V=array(V,dim=c(Nsample,Ngene,Ncell))
   B=matrix(B, nrow=Nsample, ncol=Ncell)
@@ -25,7 +25,7 @@ grad2=function(V, W, B, Y, mu, a0, Ngene, Ncell, Nsample){
   t1 <- exp(sweep(V,2:3,(W^2)/2,'+'))
   eq <- rowSums(sweep(t1,c(1,3),Bt,'*'),dims=2)
   eq1 <- sweep(t1,c(1,3),Bt,'*')
-  deq <- rowSums(sweep(eq1,2:3,W,"*"),dims=2)
+  deq <- sweep(eq1,2:3,W,"*")
 
   t21 <- exp(sweep(2*V,2:3,2*(W^2),'+'))
   t22 <- sweep(Bt*(1-Bt),1,B0+1,'/')+Bt^2
@@ -35,7 +35,7 @@ grad2=function(V, W, B, Y, mu, a0, Ngene, Ncell, Nsample){
   t200 <- sweep(t23,c(1,3),(Bt^2),'*')
   dt200 <- 2*sweep(t200,2:3,W,"*")
   t2 <- rowSums(t20-t200,dims=2)
-  dt2 <- rowSums(dt20-dt200,dims=2)
+  dt2 <- dt20-dt200
 
   t3_list_i <- list()
   for(i in 1:Ncell){
@@ -78,16 +78,19 @@ grad2=function(V, W, B, Y, mu, a0, Ngene, Ncell, Nsample){
   }
 
   dt3 <- do.call(sum, dt3_list_i)
-  dvq <- dt2+dt3
+  dvq <- sweep(dt2,1:2,dt3,"+")
 
-  da <- (dvq*(eq^2)-2*deq*vq)/(eq^3)
-  db <- -(Y-log(eq)-vq/(2*eq^2))*(2*deq/eq+da)
+  da0 <- sweep(dvq,1:2,(eq^2),"*")-sweep(-2*deq,1:2,vq,"*")
+  da <- sweep(da0,1:2,(eq^3),"/")
+  db0 <- sweep(2*deq,1:2,eq,"/")+da
+  db <- sweep(db0,1:2,(-(Y-log(eq)-vq/(2*eq^2))),"*")
 
   e22 <- 2*(s^2)
 
-  d2 <- sum((-1)*(da+db)/e22)
+  d20 <- sweep((da+db),1:2,(-e22),"/")
+  d2 <- colSums(d20,dims=1)
 
-  d4 <- sum((-1)*(Nsample)/W)
+  d4 <- (-1)*(Nsample)/W
 
   dw <- d1+d2-d4
   return(dw)

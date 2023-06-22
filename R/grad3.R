@@ -12,7 +12,7 @@ grad3=function(V, W, B, Y, a, Ngene, Ncell, Nsample){
 
   t1 <- exp(sweep(V,2:3,(W^2)/2,'+'))
   eq <- rowSums(sweep(t1,c(1,3),Bt,'*'),dims=2)
-  deq <- rowSums(sweep(t1,c(1,3),(1/B0),'*'),dims=2)-rowSums(sweep(t1,c(1,3),Bt2,'*'),dims=2)
+  deq <- sweep(t1,c(1,3),(1/B0),'*')-sweep(t1,c(1,3),Bt2,'*')
 
   t21 <- exp(sweep(2*V,2:3,2*(W^2),'+'))
   t22 <- sweep(Bt*(1-Bt),1,B0+1,'/')+Bt^2
@@ -26,7 +26,7 @@ grad3=function(V, W, B, Y, a, Ngene, Ncell, Nsample){
   B03 <- sweep(B02,1,((B0^2)*(B0+1)),'/')+2*B01
   dt201 <- sweep(t21,c(1,3),B03,'*')
   dt2001 <- sweep(t23,c(1,3),(2*B01),'*')
-  dt21 <- rowSums(dt201-dt2001,dims=2)
+  dt21 <- dt201-dt2001
 
   B04 <- sweep(B^2,1,(B0^3),'/')
   B05 <- sweep(-1*B,1,B0,'+')*B
@@ -93,22 +93,25 @@ grad3=function(V, W, B, Y, a, Ngene, Ncell, Nsample){
   dt32 <- do.call(sum, dt32_list_i)
 
   vq <- t2 + t3
-  dvq <- dt21 + dt22 + dt31 - dt32
+  dvq <- sweep(dt21,1:2,(dt22 + dt31 - dt32),"+")
 
-  da <- (dvq*(eq^2)-2*deq*vq)/(eq^3)
-  db <- -(Y-log(eq)-vq/(2*eq^2))*(2*deq/eq+da)
+  da0 <- sweep(dvq,1:2,(eq^2),"*")-sweep(-2*deq,1:2,vq,"*")
+  da <- sweep(da0,1:2,(eq^3),"/")
+  db0 <- sweep(2*deq,1:2,eq,"/")+da
+  db <- sweep(db0,1:2,(-(Y-log(eq)-vq/(2*eq^2))),"*")
 
   e22 <- 2*(s^2)
 
-  d2 <- sum((-1)*(da+db)/e22)
+  d20 <- sweep((da+db),1:2,(-e22),"/")
+  d2 <- apply(d20,c(1,3),FUN=sum)
 
-  f <- (a-1)*trigamma(B)-sweep((a-1),1,trigamma(rowSums(B)),'*')
-  f0 <- rowSums(f)
-  d3 <- sum(f0)
+  f <- rowSums(sweep((a-1),1,trigamma(rowSums(B)),'*'))
+  f0 <- (a-1)*trigamma(B)
+  d3 <- sweep(f0,1,f,"-")
 
-  g <- (B-1)*trigamma(B)-sweep((B-1),1,trigamma(rowSums(B)),'*')
-  g0 <- rowSums(g)
-  d5 <- sum(g0)
+  g <- rowSums(sweep((B-1),1,trigamma(rowSums(B)),'*'))
+  g0 <- (B-1)*trigamma(B)
+  d5 <- sweep(g0,1,g,"-")
 
   db <- d2+d3-d5
   return(db)
