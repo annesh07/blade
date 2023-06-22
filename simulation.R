@@ -1,4 +1,3 @@
-library(rBeta2009)
 library(BLADER)
 
 Nsample=20
